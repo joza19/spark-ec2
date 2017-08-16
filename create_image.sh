@@ -136,12 +136,3 @@ echo "export NVBLAS_CONFIG_FILE=/root/nvblas.conf" >> /etc/environment
 echo '#!/bin/bash' > /usr/bin/realpath
 echo 'readlink -e "$@"' >> /usr/bin/realpath
 chmod a+x /usr/bin/realpath
-
-
-
-
-
-
-
-
-
