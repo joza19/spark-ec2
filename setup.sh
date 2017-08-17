@@ -1,7 +1,5 @@
 #!/bin/bash
 
-sudo apt-get install -y -q pssh
-
 # usage: echo_time_diff name start_time end_time
 echo_time_diff () {
   local format='%Hh %Mm %Ss'
@@ -66,7 +64,7 @@ echo_time_diff "rsync /root/spark-ec2" "$rsync_start_time" "$rsync_end_time"
 
 echo "Running setup-slave on all cluster nodes to mount filesystems, etc..."
 setup_slave_start_time="$(date +'%s')"
-pssh --inline \
+parallel-ssh --inline \
     --host "$MASTERS $SLAVES" \
     --user root \
     --extra-args "-t -t $SSH_OPTS" \
