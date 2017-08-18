@@ -12,7 +12,7 @@ echo_time_diff () {
 pushd /root/spark-ec2 > /dev/null
 
 # Load the environment variables specific to this AMI
-source /root/.bashrc
+source /root/.profile
 
 # Load the cluster variables set by the deploy script
 source ec2-variables.sh
