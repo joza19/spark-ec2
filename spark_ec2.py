@@ -112,7 +112,7 @@ DEFAULT_SPARK_GITHUB_REPO = "https://github.com/apache/spark"
 
 # Default location to get the spark-ec2 scripts (and ami-list) from
 DEFAULT_SPARK_EC2_GITHUB_REPO = "https://github.com/kmu-leeky/spark-ec2"
-DEFAULT_SPARK_EC2_BRANCH = "branch-2.0"
+DEFAULT_SPARK_EC2_BRANCH = "branch-test-t2"
 
 
 def setup_external_libs(libs):
@@ -703,6 +703,9 @@ def launch_cluster(conn, opts, cluster_name):
         num_zones = len(zones)
         i = 0
         slave_nodes = []
+        ebs_optimized_var=True
+        if opts.instance_type.startswith('t2.'):
+            ebs_optimized_var=False
         for zone in zones:
             num_slaves_this_zone = get_partition(opts.slaves, num_zones, i)
             if num_slaves_this_zone > 0:
@@ -720,7 +723,7 @@ def launch_cluster(conn, opts, cluster_name):
                     user_data=user_data_content,
                     instance_initiated_shutdown_behavior=opts.instance_initiated_shutdown_behavior,
                     instance_profile_name=opts.instance_profile_name,
-                    ebs_optimized=True)
+                    ebs_optimized=ebs_optimized_var)
                 slave_nodes += slave_res.instances
                 print("Launched {s} slave{plural_s} in {z}, regid = {r}".format(
                       s=num_slaves_this_zone,
@@ -738,10 +741,13 @@ def launch_cluster(conn, opts, cluster_name):
         master_nodes = existing_masters
     else:
         master_type = opts.master_instance_type
+        ebs_optimized_var=True
         if master_type == "":
             master_type = opts.instance_type
         if opts.zone == 'all':
             opts.zone = random.choice(conn.get_all_zones()).name
+        if opts.instance_type.startswith('t2.'):
+            ebs_optimized_var=False
         master_res = conn.run_instances(
             image_id=str(image).split(":")[1],
             key_name=opts.key_pair,
@@ -756,7 +762,7 @@ def launch_cluster(conn, opts, cluster_name):
             user_data=user_data_content,
             instance_initiated_shutdown_behavior=opts.instance_initiated_shutdown_behavior,
             instance_profile_name=opts.instance_profile_name,
-            ebs_optimized=True)
+            ebs_optimized=ebs_optimized_var)
 
         master_nodes = master_res.instances
         print("Launched master in %s, regid = %s" % (zone, master_res.id))
