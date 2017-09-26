@@ -278,7 +278,7 @@ def parse_args():
         "--swap", metavar="SWAP", type="int", default=1024,
         help="Swap space to set up per node, in MB (default: %default)")
     parser.add_option(
-        "--spot-price", metavar="PRICE", type="float", default=1.0,
+        "--spot-price", metavar="PRICE", type="float",
         help="If specified, launch slaves as spot instances with the given " +
              "maximum price (in dollars)")
     parser.add_option(
